@@ -48,7 +48,7 @@ public class TurnWithEncoders extends Command {
     // Make this return true when this Command no longer needs to run execute()
     @Override
 	protected boolean isFinished() {
-        boolean done = !right.isRunning() && !left.isRunning();
+        boolean done = !right.isRunning() || !left.isRunning();
         SmartDashboard.putBoolean("Done?", done);
         prevStateLeftPID = Robot.isPIDActiveLeft;
         prevStateRightPID = Robot.isPIDActiveRight;
@@ -59,7 +59,7 @@ public class TurnWithEncoders extends Command {
     @Override
 	protected void end() {
     	Robot.drivetrain.rawDrive(0, 0);
-    	//Robot.drivetrain.resetEncoders();
+    	Robot.drivetrain.resetEncoders();
 //    	System.out.println("DONE TURNING ENCODER");
     }
 

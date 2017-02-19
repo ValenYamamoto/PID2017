@@ -25,6 +25,9 @@ public class RightDTPID extends PIDSubsystem {
 
     	encoderDriveRightPID.setOutputRange(-0.7, 0.7);
     }
+    public void resetRightEncoder() {
+    	Robot.drivetrain.rightEncoder.reset();
+    }
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
@@ -36,8 +39,8 @@ public class RightDTPID extends PIDSubsystem {
 	@Override
 	protected void usePIDOutput(double output) {
 		
-        Robot.drivetrain.motors[0].set(-output);
-        Robot.drivetrain.motors[1].set(-output);
+        Robot.drivetrain.motors[0].set(output);
+        Robot.drivetrain.motors[1].set(output);
 //        Robot.drivetrain.motors[2].set(-output);
 //        Robot.drivetrain.motors[3].set(-output);
 	}

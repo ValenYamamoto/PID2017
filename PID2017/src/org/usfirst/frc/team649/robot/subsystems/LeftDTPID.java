@@ -28,7 +28,9 @@ public class LeftDTPID extends PIDSubsystem {
     }
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-
+    public void resetLeftEncoder() {
+    	Robot.drivetrain.leftEncoder.reset();
+    }
 	@Override
 	protected double returnPIDInput() {
 		return Robot.drivetrain.getDistanceDTLeft();
@@ -36,8 +38,8 @@ public class LeftDTPID extends PIDSubsystem {
 
 	@Override
 	protected void usePIDOutput(double output) {
-        Robot.drivetrain.motors[2].set(output);
-        Robot.drivetrain.motors[3].set(output);
+        Robot.drivetrain.motors[2].set(-output);
+        Robot.drivetrain.motors[3].set(-output);
 //        Robot.drivetrain.motors[0].set(output);
 //        Robot.drivetrain.motors[1].set(output);
 	}

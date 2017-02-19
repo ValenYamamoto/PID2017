@@ -2,6 +2,8 @@
 package org.usfirst.frc.team649.robot;
 
 import org.usfirst.frc.team649.robot.commands.AutoSquare;
+import org.usfirst.frc.team649.robot.commands.DrivePIDLeft;
+import org.usfirst.frc.team649.robot.commands.DrivePIDRight;
 import org.usfirst.frc.team649.robot.commands.DrivetrainPIDCommand;
 import org.usfirst.frc.team649.robot.commands.ResetDrivetrainEncoders;
 import org.usfirst.frc.team649.robot.commands.TurnWithEncoders;
@@ -36,6 +38,7 @@ public class Robot extends IterativeRobot {
 	public static boolean isPIDActiveRight; 
 	public static RightDTPID rightDT;
 	public static boolean isPIDActive;
+	public static boolean isPIDTurn;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -50,6 +53,7 @@ public class Robot extends IterativeRobot {
 		isPIDActiveRight = false;
 		isPIDActive = false;
 		drivetrain.resetEncoders();
+		isPIDTurn = false;
 	}
 
 	/**
@@ -80,11 +84,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		isPIDTurn = false;
 		drivetrain.resetEncoders();
-		//new AutoSquare(24).start();
-		//new DrivetrainPIDCommand(40).start();
+		//new AutoSquare(45).start();
+		new DrivetrainPIDCommand(40, false).start();
 		//new ResetDrivetrainEncoders().start();
-		new TurnWithEncoders(90).start();
+		//new TurnWithEncoders(90).start();
+		//new DrivePIDRight(12).start();
+		//new DrivePIDLeft(12).start();
+		//new DrivetrainPIDCommand(-90, true).start();
 	}  
 
 	/**
@@ -95,7 +103,8 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("Right Encoder", drivetrain.getDistanceDTRight());
 		SmartDashboard.putNumber("Left Encoder", drivetrain.getDistanceDTLeft());
-
+		SmartDashboard.putBoolean("TurnPID Boolean", isPIDTurn);
+		
 	}
 
 	@Override

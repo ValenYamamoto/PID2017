@@ -41,7 +41,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public static final double highGearEncoderDistancePerPulse = 12.56 * 44/32 / 256;
 	public static final double lowGearEncoderDistancePerPulse = 12.56 * 44/32 / 256;
 	
-	public static final double powerRatio = 0.97; //right : left (right motor has less power on pbot) //TODO TUNE
+	public static final double powerRatio = 0.91; //right : left (right motor has less power on pbot) //TODO TUNE
 	public static final boolean RED = false;
 	public static final boolean GREEN = true;
 	public PIDController encoderDrivePID;
@@ -52,11 +52,11 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	
 	
 	public static class PIDConstants {
-		public static final double PID_ABSOLUTE_TOLERANCE =1.0;
-		public static final double ABS_TOLERANCE = 1.0;
-		public static  double k_P = 1; //0.2
+		public static final double PID_ABSOLUTE_TOLERANCE = 0.15;
+		public static final double ABS_TOLERANCE = 0.15;
+		public static  double k_P = 0.5; //0.2
 		public static double k_I = 0;
-		public static double k_D = 0.03;
+		public static double k_D = 0.65;
 	}
 	
 	public static class PotConstants {
@@ -172,7 +172,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		
 		encoderDrivePID = this.getPIDController();
 		encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		encoderDrivePID.setOutputRange(-.65, .65);
+		encoderDrivePID.setOutputRange(-.5, .5);
 		
 		autoDefenseSelector = new AnalogPotentiometer(RobotMap.Drivetrain.AUTO_DEFENSE_SELECTOR);
 		autoPositionSelector = new AnalogPotentiometer(RobotMap.Drivetrain.AUTO_POSITION_SELECTOR);
@@ -199,16 +199,40 @@ public class DrivetrainSubsystem extends PIDSubsystem {
         SmartDashboard.putNumber("DriveMotorLeft", left);
         SmartDashboard.putNumber("DriveMotorRight", right);
     }
+    public void rawDriveTurn(double left, double right) {
+        motors[0].set(right);
+        motors[1].set(right);
+        motors[2].set(-left);
+        motors[3].set(-left);
+        
+        SmartDashboard.putNumber("DriveMotorLeft", left);
+        SmartDashboard.putNumber("DriveMotorRight", right);
+    }
+    
+    public void stopMotors() {
+    	Robot.drivetrain.motors[0].stopMotor();
+    	Robot.drivetrain.motors[1].stopMotor();
+    	Robot.drivetrain.motors[2].stopMotor();
+    	Robot.drivetrain.motors[3].stopMotor();
+
+    }
     
     public double getDistanceDTLeft() {
         return leftEncoder.getDistance();
     }
 
     public double getDistanceDTRight() {
-      return rightEncoder.getDistance();
+        return rightEncoder.getDistance();
   }
    public double getDistanceDTBoth(){
 	   return rightEncoder.getDistance()/2 + leftEncoder.getDistance()/2;
+   }
+   public double getDistanceDTTurn() {
+	   double distance = (Math.abs(getDistanceDTLeft()) + Math.abs(getDistanceDTRight()))/2;
+	   if (encoderDrivePID.getSetpoint() < 0) {
+		   return -distance;
+	   }
+	   return distance;
    }
     public ArrayList<Double> getLoggingData() {
     	ArrayList<Double> temp = new ArrayList<Double>();
@@ -251,6 +275,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	@Override
 	protected double returnPIDInput() {
 		// TODO Auto-generated method stub
+		if (Robot.isPIDTurn == true) {
+			return getDistanceDTTurn();
+		}
 		return getDistanceDTBoth();
 	}
 
@@ -280,13 +307,16 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	@Override
 	protected void usePIDOutput(double output) {
 		// TODO Auto-generated method stub
-		rawDrive(output,output);
-		
+		if (Robot.isPIDTurn == true) {
+			rawDrive(output, -output);
+		} else {
+			rawDriveTurn(output,output);
+		}
 	}
 
 	public double getTranslationalDistanceForTurn(double angle) {
 		 System.out.println((angle/ 360.0) * (4.0 * Math.PI));
-		 return (angle*2/ 360.0) * (4.0 * Math.PI) * 1.55;
+		 return (angle*2/ 360.0) * (4.0 * Math.PI) * 2.05;
 	}
 	public boolean isOnTarget(double distance) {
 		// TODO Auto-generated method stub

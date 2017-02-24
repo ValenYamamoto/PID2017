@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import org.usfirst.frc.team649.robot.Robot;
 import org.usfirst.frc.team649.robot.RobotMap;
+
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -38,10 +41,10 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	
 	public Compressor compressor;
 	
-	public static final double highGearEncoderDistancePerPulse = 12.56 * 44/32 / 256;
+	public static final double highGearEncoderDistancePerPulse = 12.56 * 44/32 / 256 * 2; //256/160
 	public static final double lowGearEncoderDistancePerPulse = 12.56 * 44/32 / 256;
 	
-	public static final double powerRatio = 0.91; //right : left (right motor has less power on pbot) //TODO TUNE
+	public static final double powerRatio = 0.97; //right : left (right motor has less power on pbot) //TODO TUNE
 	public static final boolean RED = false;
 	public static final boolean GREEN = true;
 	public PIDController encoderDrivePID;
@@ -54,9 +57,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public static class PIDConstants {
 		public static final double PID_ABSOLUTE_TOLERANCE = 0.15;
 		public static final double ABS_TOLERANCE = 0.15;
-		public static  double k_P = 0.5; //0.2
-		public static double k_I = 0;
-		public static double k_D = 0.65;
+		public static  double k_P = 0.45; //0.2
+		public static double k_I = 0.15;
+		public static double k_D = 0.35;
 	}
 	
 	public static class PotConstants {
@@ -68,10 +71,10 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		public static double[] POS_5_POT_RANGE = {4.1,4.6};
 		
 
-		public static double[] DO_NOTHING_DEFENSE_POT_RANGE = {-0.1,0.8};
-		public static double[] ROUGH_TERRAIN_POT_RANGE = {0.9, 2.0};
-		public static double[] ROCK_WALL_POT_RANGE = {2.1,3.4};
-		public static double[] LOW_BAR_POT_RANGE = {3.5,4.6};
+		public static double[] DO_NOTHING_POT_RANGE = {-0.1,0.8};
+		public static double[] AUTO_1_POT_RANGE = {0.9, 2.0};
+		public static double[] AUTO_2_POT_RANGE = {2.1,3.4};
+		public static double[] AUTO_3_POT_RANGE = {3.5,4.6};
 		
 		public static double SCALE = 4.5 / 0.916;
 	}
@@ -149,12 +152,12 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	public DrivetrainSubsystem() {
 		super ("Drivetrain", PIDConstants.k_P, PIDConstants.k_I, PIDConstants.k_D);
 		motors = new Victor[4];
-		gyro = new AnalogGyro(0);//new ADXRS450_Gyro();
-		gyro.setSensitivity(TurnConstants.GYRO_SENSITIVITY);
-		//compressor = new Compressor();
-		gyro.reset();
-		accel = new BuiltInAccelerometer();
-		//FR,BR,BL,BR																																																																																																																																																																																																																																																																																																																						
+//		gyro = new AnalogGyro(0);//new ADXRS450_Gyro();
+//		gyro.setSensitivity(TurnConstants.GYRO_SENSITIVITY);
+//		//compressor = new Compressor();
+//		gyro.reset();
+//		accel = new BuiltInAccelerometer();
+//		//FR,BR,BL,BR																																																																																																																																																																																																																																																																																																																						
 		for(int i =0; i < motors.length; i++) {
 			motors[i] = new Victor (RobotMap.Drivetrain.MOTOR_PORTS[i]);
 		}
@@ -172,13 +175,13 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		
 		encoderDrivePID = this.getPIDController();
 		encoderDrivePID.setAbsoluteTolerance(PIDConstants.PID_ABSOLUTE_TOLERANCE);
-		encoderDrivePID.setOutputRange(-.5, .5);
+		encoderDrivePID.setOutputRange(-0.8, 0.8);
 		
-		autoDefenseSelector = new AnalogPotentiometer(RobotMap.Drivetrain.AUTO_DEFENSE_SELECTOR);
-		autoPositionSelector = new AnalogPotentiometer(RobotMap.Drivetrain.AUTO_POSITION_SELECTOR);
-		
-		leftLED = new DigitalOutput(RobotMap.Drivetrain.LED_PORTS[0]);
-		rightLED = new DigitalOutput(RobotMap.Drivetrain.LED_PORTS[1]);
+//		autoDefenseSelector = new AnalogPotentiometer(RobotMap.Drivetrain.AUTO_DEFENSE_SELECTOR);
+//		autoPositionSelector = new AnalogPotentiometer(RobotMap.Drivetrain.AUTO_POSITION_SELECTOR);
+//		
+//		leftLED = new DigitalOutput(RobotMap.Drivetrain.LED_PORTS[0]);
+//		rightLED = new DigitalOutput(RobotMap.Drivetrain.LED_PORTS[1]);
 		
 	}
 
@@ -192,7 +195,7 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 
     public void rawDrive(double left, double right) {
         motors[0].set(powerRatio * right);
-        motors[1].set(powerRatio * right);
+        motors[1].set(powerRatio *right);
         motors[2].set(-left);
         motors[3].set(-left);
         
@@ -200,8 +203,8 @@ public class DrivetrainSubsystem extends PIDSubsystem {
         SmartDashboard.putNumber("DriveMotorRight", right);
     }
     public void rawDriveTurn(double left, double right) {
-        motors[0].set(right);
-        motors[1].set(right);
+    	motors[0].set(powerRatio * right);
+        motors[1].set(powerRatio * right);
         motors[2].set(-left);
         motors[3].set(-left);
         
@@ -209,12 +212,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
         SmartDashboard.putNumber("DriveMotorRight", right);
     }
     
-    public void stopMotors() {
-    	Robot.drivetrain.motors[0].stopMotor();
-    	Robot.drivetrain.motors[1].stopMotor();
-    	Robot.drivetrain.motors[2].stopMotor();
-    	Robot.drivetrain.motors[3].stopMotor();
-
+      
+    public double getGyroValue() {
+    	return gyro.getAngle();
     }
     
     public double getDistanceDTLeft() {
@@ -234,6 +234,22 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	   }
 	   return distance;
    }
+   
+//   public double getVoltageDTRight() {
+//   	return (motors[0].getOutputVoltage() + motors[1].getOutputVoltage())/2;
+//   }
+//   
+//   public double getVoltageDTLeft() {
+//   	return (motors[2].getOutputVoltage() + motors[3].getOutputVoltage())/2;
+//   }
+//   
+//   public double getCurrentDTRight() {
+//   	return (motors[0].getOutputCurrent() + motors[1].getOutputCurrent())/2;
+//   }
+//   
+//   public double getCurrentDTLeft() {
+//   	return (motors[2].getOutputCurrent() + motors[3].getOutputCurrent())/2;
+//   }
     public ArrayList<Double> getLoggingData() {
     	ArrayList<Double> temp = new ArrayList<Double>();
    	   temp.add(motors[0].get());//right
@@ -271,12 +287,16 @@ public class DrivetrainSubsystem extends PIDSubsystem {
     public boolean seesAlignmentLine() {
     	return false;
     }
+    public void callibrateGyro() {
+    	gyro.calibrate();
+    }
 
 	@Override
 	protected double returnPIDInput() {
 		// TODO Auto-generated method stub
 		if (Robot.isPIDTurn == true) {
 			return getDistanceDTTurn();
+			//return getGyroValue();
 		}
 		return getDistanceDTBoth();
 	}
@@ -308,9 +328,9 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 	protected void usePIDOutput(double output) {
 		// TODO Auto-generated method stub
 		if (Robot.isPIDTurn == true) {
-			rawDrive(output, -output);
+			rawDriveTurn(output, -output);
 		} else {
-			rawDriveTurn(output,output);
+			rawDrive(output,output);
 		}
 	}
 
@@ -328,13 +348,13 @@ public class DrivetrainSubsystem extends PIDSubsystem {
 		//return (int)Math.round(autoDefenseSelector.get());
 		
 		
-		if (isPotWithinRange(autoDefenseSelector, PotConstants.ROUGH_TERRAIN_POT_RANGE)){
+		if (isPotWithinRange(autoDefenseSelector, PotConstants.AUTO_1_POT_RANGE)){
 			return AutoConstants.ROUGH_TERRAIN;
 		}
-		else if (isPotWithinRange(autoDefenseSelector, PotConstants.ROCK_WALL_POT_RANGE)){
+		else if (isPotWithinRange(autoDefenseSelector, PotConstants.AUTO_2_POT_RANGE)){
 			return AutoConstants.ROCK_WALL;
 		}
-		else if (isPotWithinRange(autoDefenseSelector, PotConstants.LOW_BAR_POT_RANGE)){
+		else if (isPotWithinRange(autoDefenseSelector, PotConstants.AUTO_3_POT_RANGE)){
 			return AutoConstants.LOW_BAR;
 		}
 		else{

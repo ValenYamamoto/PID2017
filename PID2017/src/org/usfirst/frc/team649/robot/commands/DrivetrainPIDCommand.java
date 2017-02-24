@@ -46,6 +46,7 @@ public class  DrivetrainPIDCommand extends Command {
     	double setpoint;
     	if (Robot.isPIDTurn == true) {
     		setpoint = Robot.drivetrain.getPosition() + Robot.drivetrain.getTranslationalDistanceForTurn(distance);
+    		//setpoint = Robot.drivetrain.getGyroValue() + distance;
     	} else {
     		setpoint = Robot.drivetrain.getPosition() + distance;
     	}
@@ -66,7 +67,7 @@ public class  DrivetrainPIDCommand extends Command {
     		time.stop();
     		time.reset();
     	}
-    	if(time.get()> 0.1){
+    	if(time.get()> 0.2){
     		isFinished = true;
     	}
     	SmartDashboard.putString("DT Current Command", this.getName());
@@ -93,7 +94,7 @@ public class  DrivetrainPIDCommand extends Command {
     	Robot.isPIDActive = false;
     	time.stop();
     	time.reset();
-    	Robot.drivetrain.resetEncoders();
+    	//Robot.drivetrain.resetEncoders();
 
 //    	Robot.logMessage("DT ended at: " + Robot.drivetrain.getDistanceDTBoth());
     }

@@ -42,7 +42,15 @@ public class OI {
 		public boolean purgeIntake() {
 			return operatorJoystick.getRawButton(7);
 		}
-		
+		public boolean gearIntake() {
+			return operatorJoystick.getRawButton(3);
+		}
+		public boolean gearBallIntake() {
+			return operatorJoystick.getRawButton(4);
+		}
+		public boolean gearFlap() {
+			return operatorJoystick.getRawButton(2);
+		}
 //		public double shooterPower() {
 //			return operatorJoystick.getY();
 //		}
@@ -102,7 +110,24 @@ public class OI {
     }
     
     public class Driver {
-
+    	public boolean shootRight() {
+    		return driveJoystickHorizontal.getRawButton(5);
+    	}
+    	public boolean shootLeft() {
+    		return driveJoystickHorizontal.getRawButton(6);
+    	}
+    	public boolean shootBoth() {
+    		return driveJoystickHorizontal.getRawButton(1);
+    	}
+    	public boolean intakeRight() {
+    		return driveJoystickVertical.getRawButton(5);
+    	}
+    	public boolean intakeLeft() {
+    		return driveJoystickVertical.getRawButton(6);
+    	}
+    	public boolean intakeBoth() {
+    		return driveJoystickVertical.getRawButton(1);
+    	}
 		public double getForward() {
 			// TODO Auto-generated method stub
 			return driveJoystickVertical.getY();
@@ -112,22 +137,22 @@ public class OI {
 			return -driveJoystickHorizontal.getX();
 		}
 		
-		public boolean isDrivetrainHighGearButtonPressed() {
-            return driveJoystickHorizontal.getRawButton(1) || driveJoystickVertical.getRawButton(1);
-        }
-		
-		public boolean isCameraUpPressed(){
-			return driveJoystickHorizontal.getRawButton(11) || driveJoystickVertical.getRawButton(6);
-		}
-		
-		public boolean isManualOverride(){
-			return driveJoystickHorizontal.getRawButton(2) || driveJoystickVertical.getRawButton(2)
-					|| operator.isManualOverrideOperator();
-		}
-		
-		public boolean isDefenseShot(){
-			return driveJoystickHorizontal.getRawButton(9) || driveJoystickVertical.getRawButton(9);
-		}
+//		public boolean isDrivetrainHighGearButtonPressed() {
+//            return driveJoystickHorizontal.getRawButton(1) || driveJoystickVertical.getRawButton(1);
+//        }
+//		
+//		public boolean isCameraUpPressed(){
+//			return driveJoystickHorizontal.getRawButton(11) || driveJoystickVertical.getRawButton(6);
+//		}
+//		
+//		public boolean isManualOverride(){
+//			return driveJoystickHorizontal.getRawButton(2) || driveJoystickVertical.getRawButton(2)
+//					|| operator.isManualOverrideOperator();
+//		}
+//		
+//		public boolean isDefenseShot(){
+//			return driveJoystickHorizontal.getRawButton(9) || driveJoystickVertical.getRawButton(9);
+//		}
     }
     
     public class Manual {

@@ -61,7 +61,7 @@ public class RobotMap {
 
 	public static class Drivetrain {
 		// FR,BR,BL,BR
-		public static final int[] MOTOR_PORTS = { 9, 8, 7, 6 };
+		public static final int[] MOTOR_PORTS = {9,8,7,6};//{ 15, 16, 17, 18 }; //{ 9, 8, 7, 6 }; //practice bot
 		public static final int[] DRIVE_SOLENOID_PORTS = {0,0,7};
 		public static final int LEFT_ENCODER_FORWARD_CHANNEL = 6;
 		public static final int LEFT_ENCODER_REVERSE_CHANNEL = 7;
@@ -75,15 +75,6 @@ public class RobotMap {
 		public static final int AUTO_DEFENSE_SELECTOR = 2;
 		public static final int AUTO_POSITION_SELECTOR = 3;
 		
-	}
-
-	public static class Intake {
-		public static final int[] MOTOR_PORTS = {8,0,9};
-		public static final int[] PDP_PORTS = {10,5,11};
-		public static final int[] RIGHT_SOLENOID_PORTS = {0,5,2};//{0,1,1,1};
-		//not used on pbot
-		public static final int[] LEFT_SOLENOID_PORTS = {0,5,2};//{0,2,1,2};
-		public static final int HAL_EFFECT_INTAKE = 18;
 	}
 
 	
@@ -110,13 +101,31 @@ public class RobotMap {
 		public static final int POT_POSITION_PORT = 2;
 		public static final int POT_DEFENSE_PORT = 3;
 	}
-	public static class ShooterSubsystem
+	public static class Shooter
 	{
-		public static final int[] MOTOR_PORTS = {7,2};
-		public static final int LEFT_EINSTEIN = 17;
-		public static final int RIGHT_EINSTEIN = 16;
-		public static final int[] PUNCH_SOLENOID_PORTS = {1,1,6};
-		public static final int IR_GATE_PORT = 1;
+//		public static final int[] MOTOR_PORTS = {7,2};
+//		public static final int LEFT_EINSTEIN = 17;
+//		public static final int RIGHT_EINSTEIN = 16;
+//		public static final int[] PUNCH_SOLENOID_PORTS = {1,1,6};
+//		public static final int IR_GATE_PORT = 1;
+		public static final int LEFT_SHOOTER_FLYWHEEL_PORT = 9;
+		public static final int RIGHT_SHOOTER_FLYWHEEL_PORT = 8;
 	}
+	public static class Gear {
+		public static final int GEAR_ROLLER_PORT = 11;
+		public static final int GEAR_FUNNEL_SERVO_PORT = 1;
+		public static final int GEAR_IR_PORT = 11;
+		public static final int GEAR_SOL_PORT = 10;
+	}
+	public static class Intake{
+//		public static final int INTAKE_MOTOR_PORT = 5;
+//		public static final int HOOPER_FEEDER_PORT = 6;
+//		public static final int LEFT_INTAKE_SOL = 4;//Last number made up need to add on port map
+//		public static final int RIGHT_INTAKE_SOL = 5;//Last number made up need to add on port map
+		public static final int RIGHT_INTAKE_PORT = 6;
+		public static final int LEFT_INTAKE_PORT = 7;
+
+	}
+
 
 }

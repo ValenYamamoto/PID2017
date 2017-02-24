@@ -11,14 +11,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class AutoSquare extends CommandGroup {
     public AutoSquare(double distance) {
+    	
     	addSequential(new DrivetrainPIDCommand(distance, false));
-    	addSequential(new DrivetrainPIDCommand(-90, true));
+    	addSequential(new DrivetrainPIDCommand(90, true));
     	addSequential(new DrivetrainPIDCommand(distance, false));
-    	addSequential(new DrivetrainPIDCommand(-90, true));
+    	addSequential(new DrivetrainPIDCommand(90, true));
     	addSequential(new DrivetrainPIDCommand(distance, false));
-    	addSequential(new DrivetrainPIDCommand(-90, true));
+    	addSequential(new DrivetrainPIDCommand(90, true));
     	addSequential(new DrivetrainPIDCommand(distance, false));
-    	addSequential(new DrivetrainPIDCommand(-90, true));
+    	addSequential(new DrivetrainPIDCommand(90, true));
     	
 //    	double turnDistance = Robot.drivetrain.getTranslationalDistanceForTurn(90);
 //    	addParallel(new DrivePIDRight(turnDistance));

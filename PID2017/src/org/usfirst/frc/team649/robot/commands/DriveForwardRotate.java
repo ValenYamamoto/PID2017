@@ -22,6 +22,7 @@ public class DriveForwardRotate extends Command {
     // Called just before this Command runs the first time
     @Override
 	protected void initialize() {
+    	SmartDashboard.putBoolean("DRIVE IS INTIALIZING", true);
     	Robot.drivetrain.driveFwdRot(forward, rotation);
     }
 
